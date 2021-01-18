@@ -10,6 +10,8 @@ import 'package:loja_audax/list.dart';
 import 'Objects/user.dart';
 
 class LoginPage extends StatefulWidget {
+  static User user;
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -18,6 +20,8 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController email = new TextEditingController();
   TextEditingController password = new TextEditingController();
   bool hiddenPassword = true;
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -40,10 +44,10 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     TextFormField(keyboardType: TextInputType.emailAddress,
                       controller: email,
-                      style: new TextStyle(color: Colors.white, fontSize: 14),
+                      style: new TextStyle(color: Colors.white, fontSize: 14, fontFamily: 'Lato'),
                       decoration: InputDecoration(
                         labelText: 'Nome',
-                        labelStyle: TextStyle(color: Colors.white),
+                        labelStyle: TextStyle(color: Colors.white, fontFamily: 'Lato'),
                         border: UnderlineInputBorder(),
                       ),),
                     Container(
@@ -63,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
                       style: new TextStyle(color: Colors.white, fontSize: 14),
                       decoration: InputDecoration(
                           labelText: 'Senha',
-                          labelStyle: TextStyle(color: Colors.white),
+                          labelStyle: TextStyle(color: Colors.white, fontFamily: 'Lato'),
                           suffixIcon: IconButton(onPressed: (){
                             setState(() {
                               hiddenPassword = !hiddenPassword;
@@ -90,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
                           btnLogin(context)
                         },
                         child: Text("ENTRAR",
-                          style: TextStyle(color: Colors.black87),),
+                          style: TextStyle(color: Colors.black87, fontFamily: 'Lato'),),
                       ),
                     )
                 ),
@@ -100,10 +104,10 @@ class _LoginPageState extends State<LoginPage> {
                       buttonColor: Colors.black,
                       child: RaisedButton(
                         onPressed: () => {
-                          Navigator.of(context).pushReplacementNamed('/register')
+                          Navigator.of(context).pushNamed('/register')
                         },
                         child: Text("Cadastre-se",
-                          style: TextStyle(color: Colors.white, fontSize: 8),),
+                          style: TextStyle(color: Colors.white, fontSize: 8, fontFamily: 'Lato'),),
                       ),
                     )
                 )
@@ -118,12 +122,12 @@ class _LoginPageState extends State<LoginPage> {
     String e = email.text;
     String p = password.text;
 
-    User user;
-    user = await LoginApi.login(e, p);
 
-    if(user != null){
-      print(user.name);
-      Navigator.of(context).push(new MaterialPageRoute(builder: (context) {return new ListPage(user);}));
+    LoginPage.user = await LoginApi.login(e, p);
+
+    if(LoginPage.user != null){
+      print(LoginPage.user.name);
+      Navigator.of(context).pushReplacement(new MaterialPageRoute(builder: (context) {return new ListPage();}));
     }
     else{
       print("Nao entrou");

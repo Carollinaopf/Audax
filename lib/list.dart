@@ -1,29 +1,29 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:http/http.dart' as http;
 import 'package:loja_audax/API/productsAPI.dart';
+import 'package:loja_audax/Components/searchComponent.dart';
 import 'package:loja_audax/Objects/products.dart';
 import 'dart:async';
 import 'dart:convert';
 
 import 'package:loja_audax/Objects/user.dart';
+import 'package:loja_audax/cart.dart';
 import 'package:loja_audax/details.dart';
+import 'package:loja_audax/login.dart';
 
 // ignore: must_be_immutable
 class ListPage extends StatefulWidget {
-  User user;
-  ListPage(this.user);
-
 
   @override
-  _ListPageState createState() => _ListPageState(user);
+  _ListPageState createState() => _ListPageState();
 }
 
 class _ListPageState extends State<ListPage> {
-  User user;
+  List<Products> prod;
 
-  _ListPageState(this.user);
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +33,14 @@ class _ListPageState extends State<ListPage> {
         backgroundColor: Colors.black,
         actions: <Widget>[
           IconButton(icon: Icon(Icons.search, color: Colors.white,),
-              onPressed: null,
+              onPressed: (){
+                showSearch(context: context, delegate: ProductSearch(prod));
+              },
           ),
           IconButton(icon: Image.asset('assets/image/blaIcon.png'),
               onPressed: null),
           IconButton(icon: Icon(Icons.shopping_cart_outlined, color: Colors.white,),
-              onPressed: null),
+              onPressed: () => {Navigator.of(context).pushReplacement(new MaterialPageRoute(builder: (context) {return new CartPage();}))}),
         ],
       ),
       drawer: Theme(
@@ -49,13 +51,13 @@ class _ListPageState extends State<ListPage> {
               children: [
                 Theme(
                   data: Theme.of(context).copyWith(canvasColor: Colors.black54),
-                  child: UserAccountsDrawerHeader(accountName: Text(user.name), accountEmail: Text(user.wallet.toString()),
+                  child: UserAccountsDrawerHeader(accountName: Text(LoginPage.user.name), accountEmail: Text(LoginPage.user.wallet.toString()),
                   decoration: BoxDecoration(color: Colors.black),),
                 ),
                 ListTile(leading: Icon(Icons.shopping_cart_outlined, color: Colors.white,),
                   title: Text('Carrinho', style: TextStyle(color: Colors.white),),
                   onTap: (){
-
+                    Navigator.of(context).pushReplacement(new MaterialPageRoute(builder: (context) {return new CartPage();}));
                   },
                 ),
                 ListTile(leading: Icon(Icons.arrow_back_sharp, color: Colors.white,),
@@ -78,7 +80,11 @@ class _ListPageState extends State<ListPage> {
     return FutureBuilder(
         future: products,
         builder: (context, snapshot){
+          if(!snapshot.hasData){
+            return Center(child: CircularProgressIndicator(),);
+          }
           List<Products> products = snapshot.data;
+          prod = products;
           return _listp(products);
         });
   }
@@ -93,7 +99,7 @@ class _ListPageState extends State<ListPage> {
 
 
             return GestureDetector(
-              onTap:() => Navigator.of(context).push(new MaterialPageRoute(builder: (context) {return new DetailsPage(user, p);})),
+              onTap:() => Navigator.of(context).push(new MaterialPageRoute(builder: (context) {return new DetailsPage(p);})),
               child: Card(
                color: Colors.black,
                   child: Row(
@@ -101,13 +107,15 @@ class _ListPageState extends State<ListPage> {
                       Container(
                           width: 167,
                           height: 116,
-                          child: Image.asset('assets/image/${p.image}'),
+                          child: Image.network('https://market-ws.herokuapp.com/uploads/${p.image}'),
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(p.nome, style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),),
-                          Text(p.cost.toString(), style: TextStyle(color: Colors.white, fontSize: 14),)
+                          Container(
+                              width: 120,
+                              child: Text(p.nome, style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold, fontFamily: 'Montserrat'),)),
+                          Text(p.cost.toString(), style: TextStyle(color: Colors.white, fontSize: 14, fontFamily: 'Lato'),)
                         ],
                       ),
                       SizedBox(height: 5,)

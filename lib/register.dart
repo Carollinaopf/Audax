@@ -161,12 +161,20 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   btnRegister(BuildContext context) async{
-    if(_cPassword.text == _password.text){
+    String name = _name.text;
+    String email = _email.text;
+    String password = _password.text;
 
-      String name = _name.text;
-      String email = _email.text;
-      String password = _password.text;
+    String pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    RegExp regExp = new RegExp(pattern);
+    
+    if(name == null || email == null || password == null){
 
+    }
+    else if(!regExp.hasMatch(email)){
+
+    }
+    else if(_cPassword.text == _password.text){
 
       bool registed = await RegisterAPI.Register(name, email, password);
 
