@@ -40,14 +40,14 @@ class DataBaseHelper{
   }
 
   void _createDb(Database db, int newVersion) async {
-    await db.execute('CREATE TABLE $cartTable($cartID TEXT, '
-        '$cartName TEXT, $cartUserID TEXT, $cartPrice TEXT, $cartImage TEXT)');
+    await db.execute('CREATE TABLE IF NOT EXISTS $cartTable($cartID TEXT, '
+        '$cartName TEXT, $cartUserID TEXT, $cartPrice INTEGER, $cartImage TEXT)');
   }
 
    Future<int> insertProductCart(Products p) async {
     Database db = await this.database;
 
-    Map mapa = {
+    Map<String, dynamic> mapa = {
       cartID : p.sId,
       cartName : p.nome,
       cartPrice : p.cost,
@@ -55,6 +55,7 @@ class DataBaseHelper{
     };
 
     print(mapa.toString());
+    print("tentando inserir..");
     var resultado = await db.insert(cartTable, mapa);
     print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
     print('resultado: $resultado.toString()');
@@ -68,15 +69,15 @@ class DataBaseHelper{
 
     print(pCart.toString());
 
-   // List<Products> productss = pCart.forEach((k, v) { };)
+    List<Products> productss = List<Products>();
 
     for(Map map in pCart){
       Products p = Products.fromJson(map);
       print(map.toString());
-      //productss.add(p);
+      productss.add(p);
     }
     print('está pegando');
-    return null;
+    return productss;
   }
 
 
