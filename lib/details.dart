@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:loja_audax/Helper/dataBaseHelper.dart';
 import 'package:loja_audax/Objects/products.dart';
 import 'package:loja_audax/Objects/user.dart';
 
@@ -18,6 +19,7 @@ class DetailsPage extends StatefulWidget {
 
 class _DetailsPageState extends State<DetailsPage> {
   Products p;
+  DataBaseHelper db = DataBaseHelper();
 
   _DetailsPageState(this.p);
   @override
@@ -36,11 +38,6 @@ class _DetailsPageState extends State<DetailsPage> {
               padding: const EdgeInsets.all(40),
               child: Column(
                 children: [
-                  Container(
-                    width: 50,
-                    height: 50,
-                    child: IconButton(icon: Icon(Icons.add_shopping_cart_outlined), onPressed: (){},),
-                  ),
                   Center(
                     child: Container(
                         width: 360,
@@ -90,6 +87,44 @@ class _DetailsPageState extends State<DetailsPage> {
                                         })
                           },
                           child: Text("COMPRAR",
+                            style: TextStyle(color: Colors.black87),),
+                        ),
+                      )
+                  ),
+                  SizedBox(height: 5,),
+                  Container (
+                      width: 250,
+                      child: ButtonTheme(
+                        buttonColor: Colors.white,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
+                        child: RaisedButton(
+                          onPressed: () => {
+                            showDialog(context: context,
+                                builder: (context){
+                                  return AlertDialog(
+                                    backgroundColor: Colors.black45,
+                                    title: Text("Item adicionado ao carrinho", style: TextStyle(color: Colors.white)),
+                                    actions: <Widget>[
+                                      Container (
+                                          width: 250,
+                                          child: ButtonTheme(
+                                            buttonColor: Colors.white,
+                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
+                                            child: RaisedButton(
+                                              onPressed: () => {
+                                                db.insertProductCart(p),
+                                                Navigator.of(context).pop()
+                                              },
+                                              child: Text("FECHAR",
+                                                style: TextStyle(color: Colors.black87),),
+                                            ),
+                                          )
+                                      ),
+                                    ],
+                                  );
+                                })
+                          },
+                          child: Text("ADICIONAR AO CARRINHO",
                             style: TextStyle(color: Colors.black87),),
                         ),
                       )

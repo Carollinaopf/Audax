@@ -131,7 +131,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
                         child: RaisedButton(
                           onPressed: () => {
-                            Navigator.of(context).pushReplacementNamed('/home')
+                            btnRegister(context)
                           },
                           child: Text("CADASTRAR",
                             style: TextStyle(color: Colors.black87),),
@@ -144,7 +144,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         buttonColor: Colors.black,
                         child: RaisedButton(
                           onPressed: () => {
-                            btnRegister(context)
+                            Navigator.of(context).pushReplacementNamed('/home')
                           },
                           child: Text("Já tem uma conta? Login.",
                             style: TextStyle(color: Colors.white, fontSize: 10),),
@@ -169,12 +169,36 @@ class _RegisterPageState extends State<RegisterPage> {
     RegExp regExp = new RegExp(pattern);
     
     if(name == null || email == null || password == null){
-
+      print('campo vazio');
     }
     else if(!regExp.hasMatch(email)){
-
+      print('email com erro');
+      showDialog(context: context,
+          builder: (context){
+            return AlertDialog(
+              backgroundColor: Colors.black45,
+              title: Text("Email inválido.", style: TextStyle(color: Colors.white)),
+              actions: <Widget>[
+                Container (
+                    width: 250,
+                    child: ButtonTheme(
+                      buttonColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
+                      child: RaisedButton(
+                        onPressed: () => {
+                          Navigator.of(context).pop()
+                        },
+                        child: Text("FECHAR",
+                          style: TextStyle(color: Colors.black87),),
+                      ),
+                    )
+                ),
+              ],
+            );
+          });
     }
     else if(_cPassword.text == _password.text){
+      print('cadastrou');
 
       bool registed = await RegisterAPI.Register(name, email, password);
 
@@ -204,6 +228,7 @@ class _RegisterPageState extends State<RegisterPage> {
             });
       }
       else{
+        print('email já utilizado.');
         showDialog(context: context,
             builder: (context){
               return AlertDialog(
@@ -217,7 +242,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
                         child: RaisedButton(
                           onPressed: () => {
-                            Navigator.of(context).pushReplacementNamed('/register')
+                            Navigator.of(context).pop()
                           },
                           child: Text("TENTE NOVAMENTE",
                             style: TextStyle(color: Colors.black87),),
@@ -230,6 +255,7 @@ class _RegisterPageState extends State<RegisterPage> {
       }
     }
     else{
+      print('senhas não coicidem');
       showDialog(context: context,
           builder: (context){
             return AlertDialog(
@@ -243,7 +269,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
                       child: RaisedButton(
                         onPressed: () => {
-                          Navigator.of(context).pushReplacementNamed('/register')
+                          Navigator.of(context).pop()
                         },
                         child: Text("TENTE NOVAMENTE",
                           style: TextStyle(color: Colors.black87),),

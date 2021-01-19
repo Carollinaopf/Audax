@@ -130,7 +130,29 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.of(context).pushReplacement(new MaterialPageRoute(builder: (context) {return new ListPage();}));
     }
     else{
-      print("Nao entrou");
+      showDialog(context: context,
+          builder: (context){
+        return AlertDialog(
+          backgroundColor: Colors.black45,
+          title: Text("Usuário não existe.", style: TextStyle(color: Colors.white)),
+          actions: <Widget>[
+            Container (
+                width: 250,
+                child: ButtonTheme(
+                  buttonColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
+                  child: RaisedButton(
+                    onPressed: () => {
+                      Navigator.of(context).pop()
+                    },
+                    child: Text("FECHAR",
+                      style: TextStyle(color: Colors.black87),),
+                  ),
+                )
+            ),
+          ],
+        );
+      });
     }
   }
 }

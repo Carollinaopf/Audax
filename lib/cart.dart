@@ -13,6 +13,8 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   List<Products> p = List<Products>();
 
+  DataBaseHelper db = DataBaseHelper();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

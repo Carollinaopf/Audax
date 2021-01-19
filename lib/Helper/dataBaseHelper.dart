@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:convert';
 import 'package:loja_audax/Objects/products.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -23,14 +24,14 @@ class DataBaseHelper{
     return _baseHelper;
   }
 
-  Future<Database> get database async{
+   Future<Database> get database async{
     if(_database == null){
       _database = await initializeDatabase();
     }
     return _database;
   }
 
-  Future<Database> initializeDatabase() async {
+   Future<Database> initializeDatabase() async {
     var directory = await getDatabasesPath();
     String path = directory + 'cart.db';
 
@@ -43,7 +44,7 @@ class DataBaseHelper{
         '$cartName TEXT, $cartUserID TEXT, $cartPrice TEXT, $cartImage TEXT)');
   }
 
-  Future<int> insertProductCart(Products p) async {
+   Future<int> insertProductCart(Products p) async {
 
     Database db = await this.database;
 
@@ -52,7 +53,21 @@ class DataBaseHelper{
     return resultado;
   }
 
+   Future<List> getProductsCart() async {
+    Database db = await this.database;
 
+    List<Map> pCart = await db.query(cartTable);
+
+    final productss = List<Products>();
+
+    for(Map map in pCart){
+      Products p = Products.fromJson(map);
+      print(map.toString());
+      productss.add(p);
+    }
+
+    return productss;
+  }
 
 
 }
