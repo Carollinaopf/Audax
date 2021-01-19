@@ -45,28 +45,38 @@ class DataBaseHelper{
   }
 
    Future<int> insertProductCart(Products p) async {
-
     Database db = await this.database;
 
-    var resultado = await db.insert(cartTable, p.toJson());
+    Map mapa = {
+      cartID : p.sId,
+      cartName : p.nome,
+      cartPrice : p.cost,
+      cartImage : p.image
+    };
 
+    print(mapa.toString());
+    var resultado = await db.insert(cartTable, mapa);
+    print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+    print('resultado: $resultado.toString()');
     return resultado;
   }
 
-   Future<List> getProductsCart() async {
+   Future<List<Products>> getProductsCart() async {
     Database db = await this.database;
 
-    List<Map> pCart = await db.query(cartTable);
+    List<Map> pCart = await db.rawQuery('SELECT * FROM $cartTable');
 
-    final productss = List<Products>();
+    print(pCart.toString());
+
+   // List<Products> productss = pCart.forEach((k, v) { };)
 
     for(Map map in pCart){
       Products p = Products.fromJson(map);
       print(map.toString());
-      productss.add(p);
+      //productss.add(p);
     }
-
-    return productss;
+    print('está pegando');
+    return null;
   }
 
 
