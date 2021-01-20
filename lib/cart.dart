@@ -83,7 +83,7 @@ class _CartPageState extends State<CartPage> {
             itemCount: products != null ? products.length : 0,
             itemBuilder: (context, index){
               Products p = products[index];
-
+              print(p.sId.toString());
 
               return GestureDetector(
                 onTap:() => Navigator.of(context).push(new MaterialPageRoute(builder: (context) {return new DetailsPage(p);})),

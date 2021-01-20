@@ -9,10 +9,10 @@ class DataBaseHelper{
   static Database _database;
 
   String cartTable = 'cartTable';
-  String cartID = 'id';
+  String cartID = '_id';
   String cartUserID = 'userID';
   String cartName = 'name';
-  String cartPrice = 'price';
+  String cartPrice = 'cost';
   String cartImage = 'image';
 
   DataBaseHelper._createInstance();
@@ -54,11 +54,7 @@ class DataBaseHelper{
       cartImage : p.image
     };
 
-    print(mapa.toString());
-    print("tentando inserir..");
     var resultado = await db.insert(cartTable, mapa);
-    print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
-    print('resultado: $resultado.toString()');
     return resultado;
   }
 
@@ -76,9 +72,28 @@ class DataBaseHelper{
       print(map.toString());
       productss.add(p);
     }
-    print('está pegando');
     return productss;
   }
 
+  Future<bool> cartExists(String id) async{
+    var db = await this.database;
 
+    List<Map> map = await db.query(cartTable, columns: [cartID], where: "$cartID = ?", whereArgs: [id]);
+
+    if(map.length > 0){
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  Future<int> deleteCartProduct(String id) async{
+    var db = await this.database;
+
+    print('tentando excluir');
+    int resultado = await db.delete(cartTable, where: "$cartID = ?", whereArgs: [id]);
+    print('resultado: $resultado');
+    return resultado;
+  }
 }
