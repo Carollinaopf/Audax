@@ -7,6 +7,18 @@ class ProductSearch extends SearchDelegate<String>{
 
   ProductSearch(this.ps);
 
+  @override
+  ThemeData appBarTheme(BuildContext context) {
+    // TODO: implement appBarTheme
+    final ThemeData theme = Theme.of(context);
+
+    return theme.copyWith(
+      primaryColor: Colors.black,
+      primaryIconTheme: theme.primaryIconTheme,
+      primaryColorBrightness: theme.primaryColorBrightness,
+        textTheme: theme.textTheme.copyWith(title: theme.textTheme.title.copyWith(color: theme.primaryTextTheme.title.color))
+    );
+  }
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -33,7 +45,7 @@ class ProductSearch extends SearchDelegate<String>{
     }
 
     final suggestionList = suggestions.where((p) => p.toLowerCase().startsWith(query)).toList();
-    return ListView.builder(itemBuilder: (context, index) => ListTile(title: Text(suggestionList[index]),
+    return ListView.builder(itemBuilder: (context, index) => ListTile(title: Text(suggestionList[index], style: TextStyle(fontFamily: 'Lato'),),
       onTap: () => Navigator.of(context).push(new MaterialPageRoute(builder: (context) {return new DetailsPage(ps[index]);})),),
         itemCount: suggestionList.length);}
   

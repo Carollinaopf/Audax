@@ -144,7 +144,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         buttonColor: Colors.black,
                         child: RaisedButton(
                           onPressed: () => {
-                            Navigator.of(context).pushReplacementNamed('/home')
+                            Navigator.of(context).pushReplacementNamed('/login')
                           },
                           child: Text("Já tem uma conta? Login.",
                             style: TextStyle(color: Colors.white, fontSize: 10),),

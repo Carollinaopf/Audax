@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 import 'package:loja_audax/Objects/products.dart';
+import 'package:loja_audax/Objects/user.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DataBaseHelper{
@@ -14,6 +15,12 @@ class DataBaseHelper{
   String cartName = 'name';
   String cartPrice = 'cost';
   String cartImage = 'image';
+
+  String userTable = 'userTable';
+  String userID = '_id';
+  String userName = 'name';
+  String userPassword = 'password';
+  String wallet = 'wallet';
 
   DataBaseHelper._createInstance();
 
@@ -32,16 +39,25 @@ class DataBaseHelper{
   }
 
    Future<Database> initializeDatabase() async {
+    print('printando');
     var directory = await getDatabasesPath();
     String path = directory + 'cart.db';
 
     var cartDatabase = await openDatabase(path, version: 1, onCreate: _createDb);
+    print('printando22');
     return cartDatabase;
   }
 
   void _createDb(Database db, int newVersion) async {
-    await db.execute('CREATE TABLE IF NOT EXISTS $cartTable($cartID TEXT, '
-        '$cartName TEXT, $cartUserID TEXT, $cartPrice INTEGER, $cartImage TEXT)');
+    List<String> q = [
+      "CREATE TABLE IF NOT EXISTS $cartTable($cartID TEXT, $cartName TEXT, $cartUserID TEXT, $cartPrice INTEGER, $cartImage TEXT);",
+      "CREATE TABLE IF NOT EXISTS $userTable($userID TEXT, $userName TEXT, $userPassword TEXT, $wallet INTEGER)",
+    ];
+
+    for(String que in q){
+      await db.execute(que);
+    }
+    print('criou');
   }
 
    Future<int> insertProductCart(Products p) async {
@@ -95,5 +111,39 @@ class DataBaseHelper{
     int resultado = await db.delete(cartTable, where: "$cartID = ?", whereArgs: [id]);
     print('resultado: $resultado');
     return resultado;
+  }
+
+  Future<int> saveUser(User u) async{
+    var db = await this.database;
+
+    Map<String, dynamic> mapa = {
+      userID : u.sId,
+      userName : u.name,
+      userPassword : u.password,
+      wallet : u.wallet
+    };
+
+    var resultado = await db.insert(userTable, mapa);
+
+    return resultado;
+  }
+
+  Future<User> searchUser() async{
+    var db = await this.database;
+
+    List<Map> u = await db.rawQuery('SELECT * FROM $userTable');
+    List<User> user = List<User>();
+
+    for(Map map in u){
+      User p = User.fromJson(map);
+      print(map.toString());
+      user.add(p);
+    }
+    return user.first;
+  }
+
+  void deleteUser() async{
+    var db = await this.database;
+    List<Map> i = await db.rawQuery('DELETE * FROM $userTable');
   }
 }

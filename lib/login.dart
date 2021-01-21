@@ -5,7 +5,9 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:loja_audax/API/loginAPI.dart';
+import 'package:loja_audax/Helper/dataBaseHelper.dart';
 import 'package:loja_audax/list.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Objects/user.dart';
 
@@ -21,7 +23,9 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController password = new TextEditingController();
   bool hiddenPassword = true;
 
+  DataBaseHelper db = DataBaseHelper();
 
+  bool entrou = false;
 
   @override
   Widget build(BuildContext context) {
@@ -54,68 +58,91 @@ class _LoginPageState extends State<LoginPage> {
                       width: 400,
                       height: 0.5,
 
-                      color: Colors.white,
-                    )
-                  ],
-                ),
-                Divider(),
-                Column(
-                  children: [
-                    TextFormField(keyboardType: TextInputType.visiblePassword,
-                      controller: password,
-                      obscureText: hiddenPassword,
-                      style: new TextStyle(color: Colors.white, fontSize: 14),
-                      decoration: InputDecoration(
-                          labelText: 'Senha',
-                          labelStyle: TextStyle(color: Colors.white, fontFamily: 'Lato'),
-                          suffixIcon: IconButton(onPressed: (){
-                            setState(() {
-                              hiddenPassword = !hiddenPassword;
-                            });},
-                            color: Colors.white,
-                            icon: Icon(hiddenPassword ? Icons.visibility_off : Icons.visibility),)
-                      ),),
-                    Container(
-                      width: 400,
-                      height: 0.5,
+                              color: Colors.white,
+                            )
+                          ],
+                        ),
+                        Divider(),
+                        Column(
+                          children: [
+                            TextFormField(
+                              keyboardType: TextInputType.visiblePassword,
+                              controller: password,
+                              obscureText: hiddenPassword,
+                              style: new TextStyle(color: Colors.white,
+                                  fontSize: 14),
+                              decoration: InputDecoration(
+                                  labelText: 'Senha',
+                                  labelStyle: TextStyle(
+                                      color: Colors.white, fontFamily: 'Lato'),
+                                  suffixIcon: IconButton(onPressed: () {
+                                    setState(() {
+                                      hiddenPassword = !hiddenPassword;
+                                    });
+                                  },
+                                    color: Colors.white,
+                                    icon: Icon(hiddenPassword
+                                        ? Icons.visibility_off
+                                        : Icons.visibility),)
+                              ),),
+                            Container(
+                              width: 400,
+                              height: 0.5,
 
-                      color: Colors.white,
-                    )
-                  ],
-                ),
-                SizedBox(height: 50,),
-                Container (
-                    width: 250,
-                    child: ButtonTheme(
-                      buttonColor: Colors.white,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
-                      child: RaisedButton(
-                        onPressed: () => {
-                          btnLogin(context)
-                        },
-                        child: Text("ENTRAR",
-                          style: TextStyle(color: Colors.black87, fontFamily: 'Lato'),),
-                      ),
-                    )
-                ),
-                Container (
-                    width: 100,
-                    child: ButtonTheme(
-                      buttonColor: Colors.black,
-                      child: RaisedButton(
-                        onPressed: () => {
-                          Navigator.of(context).pushNamed('/register')
-                        },
-                        child: Text("Cadastre-se",
-                          style: TextStyle(color: Colors.white, fontSize: 8, fontFamily: 'Lato'),),
-                      ),
-                    )
-                )
-              ],
-            ),
-          )
-      ),
-    );
+                              color: Colors.white,
+                            )
+                          ],
+                        ),
+                        SizedBox(height: 50,),
+                        Container(
+                            width: 250,
+                            child: ButtonTheme(
+                              buttonColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18.0)),
+                              child: RaisedButton(
+                                onPressed: () =>
+                                {
+                                  entrou = true,
+                                  btnLogin(context),
+                                  savePreferencies(email.text, password.text)
+                                },
+                                child: !entrou ? Text("ENTRAR",
+                                  style: TextStyle(color: Colors.black87,
+                                      fontFamily: 'Lato'),)
+                                      : CircularProgressIndicator(),
+                              ),
+                            )
+                        ),
+                        Container(
+                            width: 100,
+                            child: ButtonTheme(
+                              buttonColor: Colors.black,
+                              child: RaisedButton(
+                                onPressed: () =>
+                                {
+                                  Navigator.of(context).pushNamed('/register')
+                                },
+                                child: Text("Cadastre-se",
+                                  style: TextStyle(color: Colors.white,
+                                      fontSize: 8,
+                                      fontFamily: 'Lato'),),
+                              ),
+                            )
+                        )
+                      ],
+                    ),
+                  )
+              ),
+            );
+          }
+
+  savePreferencies(String name, String password) async{
+    SharedPreferences sp = await SharedPreferences.getInstance();
+
+    sp.setBool("logado", true);
+    sp.setString('email', name);
+    sp.setString('password', password);
   }
 
   btnLogin(BuildContext context) async {

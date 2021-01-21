@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:loja_audax/Objects/products.dart';
 import 'package:loja_audax/login.dart';
 import 'Helper/dataBaseHelper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'details.dart';
 import 'list.dart';
 
@@ -49,7 +50,8 @@ class _CartPageState extends State<CartPage> {
                   leading: Icon(Icons.arrow_back_sharp, color: Colors.white,),
                   title: Text('Sair', style: TextStyle(color: Colors.white),),
                   onTap: () {
-                    Navigator.of(context).pushReplacementNamed('/');
+                    cleanPrefenrences();
+                    Navigator.of(context).pushReplacementNamed('/login');
                   },
                 ),
               ],
@@ -59,6 +61,10 @@ class _CartPageState extends State<CartPage> {
       ),
       body: productCartList(),
     );
+  }
+  cleanPrefenrences() async{
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.clear();
   }
     productCartList(){
     print('está entrando');

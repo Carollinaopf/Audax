@@ -8,6 +8,7 @@ import 'package:loja_audax/Components/searchComponent.dart';
 import 'package:loja_audax/Objects/products.dart';
 import 'dart:async';
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:loja_audax/Objects/user.dart';
 import 'package:loja_audax/cart.dart';
@@ -63,7 +64,8 @@ class _ListPageState extends State<ListPage> {
                 ListTile(leading: Icon(Icons.arrow_back_sharp, color: Colors.white,),
                   title: Text('Sair', style: TextStyle(color: Colors.white),),
                   onTap: (){
-                    Navigator.of(context).pushReplacementNamed('/');
+                    cleanPrefenrences();
+                    Navigator.of(context).pushReplacementNamed('/login');
                   },
                 ),
               ],
@@ -125,5 +127,10 @@ class _ListPageState extends State<ListPage> {
             );
           }),
     );
+  }
+
+  cleanPrefenrences() async{
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.clear();
   }
 }
