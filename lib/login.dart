@@ -105,7 +105,6 @@ class _LoginPageState extends State<LoginPage> {
                                 {
                                   entrou = true,
                                   btnLogin(context),
-                                  savePreferencies(email.text, password.text)
                                 },
                                 child: !entrou ? Text("ENTRAR",
                                   style: TextStyle(color: Colors.black87,
@@ -137,12 +136,13 @@ class _LoginPageState extends State<LoginPage> {
             );
           }
 
-  savePreferencies(String name, String password) async{
+  savePreferencies() async{
     SharedPreferences sp = await SharedPreferences.getInstance();
 
     sp.setBool("logado", true);
-    sp.setString('email', name);
-    sp.setString('password', password);
+    sp.setString('email', LoginPage.user.name);
+    sp.setString('id', LoginPage.user.sId);
+    sp.setInt('wallet', LoginPage.user.wallet);
   }
 
   btnLogin(BuildContext context) async {
@@ -154,6 +154,7 @@ class _LoginPageState extends State<LoginPage> {
 
     if(LoginPage.user != null){
       print(LoginPage.user.name);
+      savePreferencies();
       Navigator.of(context).pushReplacement(new MaterialPageRoute(builder: (context) {return new ListPage();}));
     }
     else{

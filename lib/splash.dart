@@ -37,16 +37,21 @@ class _SplashScreenState extends State<SplashScreen> {
 
 
    getPreferences() async{
+
     SharedPreferences sp = await SharedPreferences.getInstance();
 
     bool logado = sp.getBool("logado") ?? false;
 
     if(logado){
-      String email = sp.getString('email');
-      String password = sp.getString('password');
+      String name = sp.getString('email');
+      String id = sp.getString('id');
+      int wallet = sp.getInt('wallet');
 
-      User user = await LoginApi.login(email, password);
-      LoginPage.user = user;
+      LoginPage.user = new User();
+
+      LoginPage.user.sId = id;
+      LoginPage.user.name = name;
+      LoginPage.user.wallet = wallet;
 
       Navigator.of(context).pushReplacementNamed('/list');
     }
